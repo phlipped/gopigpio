@@ -33,7 +33,7 @@ type Result struct {
 }
 
 
-func (p Pigpio) sendCmd(c Cmd) (Result, error) {
+func sendCmd(p io.ReadWriter, c Cmd) (Result, error) {
 	cmdAsBytes := c.encodeToBytes()
 	if _, err := p.Write(cmdAsBytes); err != nil {
 		return Result{}, err

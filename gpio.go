@@ -1,5 +1,9 @@
 package gopigpio
 
+import (
+	"io"
+)
+
 // GPIO Modes
 type GpioMode uint32
 
@@ -19,7 +23,7 @@ const (
   GPIO_SET_MODE = 0
 )
 
-func (p Pigpio) GpioSetMode(gpio uint32, mode GpioMode) error {
+func GpioSetMode(p io.ReadWriter, gpio uint32, mode GpioMode) error {
   _ = gpio
   _ = mode
 
@@ -30,7 +34,7 @@ func (p Pigpio) GpioSetMode(gpio uint32, mode GpioMode) error {
           P2: uint32(mode),
   }
   // Send cmd
-  result, err := p.sendCmd(cmd)
+  result, err := sendCmd(p, cmd)
 
   // Get response
   // FIXME process result and err
