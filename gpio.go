@@ -16,7 +16,7 @@ const (
 
 // Command IDs for GPIOs
 const (
-  GPIO_SET_MODE CmdID = 0
+  GPIO_SET_MODE = 0
 )
 
 func (p Pigpio) GpioSetMode(gpio uint32, mode GpioMode) error {
@@ -25,12 +25,12 @@ func (p Pigpio) GpioSetMode(gpio uint32, mode GpioMode) error {
 
   // Build cmd struct
   cmd := Cmd{
-	  Cmd: GPIO_SET_MODE,
+	  ID: GPIO_SET_MODE,
 	  P1: gpio,
           P2: uint32(mode),
   }
   // Send cmd
-  result, err := p.sendCmdSimple(cmd)
+  result, err := p.sendCmd(cmd)
 
   // Get response
   // FIXME process result and err
