@@ -19,7 +19,7 @@ const (
   GPIO_SET_MODE CmdID = 0
 )
 
-func GpioSetMode(gpio uint32, mode GpioMode) error {
+func (p Pigpio) GpioSetMode(gpio uint32, mode GpioMode) error {
   _ = gpio
   _ = mode
 
@@ -30,8 +30,7 @@ func GpioSetMode(gpio uint32, mode GpioMode) error {
           P2: uint32(mode),
   }
   // Send cmd
-  // FIXME actually pass a socket, not nil
-  result, err := sendCmdSimple(nil, cmd)
+  result, err := p.sendCmdSimple(cmd)
 
   // Get response
   // FIXME process result and err
