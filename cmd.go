@@ -16,14 +16,15 @@ type Cmd struct {
 }
 
 func (c Cmd) encodeToBytes() []byte {
-	buf := make([]byte, 32)
-	binary.BigEndian.PutUint32(buf[0:3], c.ID)
-	binary.BigEndian.PutUint32(buf[4:7], c.P1)
-	binary.BigEndian.PutUint32(buf[8:11], c.P2)
-	binary.BigEndian.PutUint32(buf[12:15], uint32(len(c.Ext)))
+	buf := make([]byte, 16)
+	binary.LittleEndian.PutUint32(buf[0:4], c.ID)
+	binary.LittleEndian.PutUint32(buf[4:8], c.P1)
+	binary.LittleEndian.PutUint32(buf[8:12], c.P2)
+	binary.LittleEndian.PutUint32(buf[12:16], uint32(len(c.Ext)))
 	if len(c.Ext) > 0 {
 		buf = append(buf, c.Ext...)
 	}
+
 	return buf
 }
 
@@ -40,18 +41,18 @@ func sendCmd(p io.ReadWriter, c Cmd) (Result, error) {
 	}
 
 	// Read the first 32 bytes back
-	responseBytes := make([]byte, 32)
+	responseBytes := make([]byte, 16)
 	if _, err := io.ReadFull(p, responseBytes); err != nil {
 		return Result{}, err
 	}
 
-	// Verify the first 24 bytes of the response match the first 24 bytes of the request
-	if !bytes.Equal(cmdAsBytes[0:2], responseBytes[0:2]) {
-		return Result{}, fmt.Errorf("Unexpected response header: want %v, got %v", cmdAsBytes[0:2], responseBytes[0:2])
+	// Verify the first 12 bytes of the response match the first 12 bytes of the request
+	if !bytes.Equal(cmdAsBytes[0:3], responseBytes[0:3]) {
+		return Result{}, fmt.Errorf("Unexpected response header: want %v, got %v", cmdAsBytes[0:3], responseBytes[0:3])
 	}
 
 	result := Result{}
-	resVal := binary.BigEndian.Uint32(responseBytes[12:15])
+	resVal := binary.LittleEndian.Uint32(responseBytes[12:16])
 	// If we are expecting an extended response, then resVal indicates the length of the extra data.
 	if c.ResponseHasExt {
 		result.ext = make([]byte, resVal)
