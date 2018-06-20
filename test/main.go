@@ -11,10 +11,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	result, err := gopigpio.HardwareRevision(s)
+	hwVersion, err := gopigpio.HardwareRevision(s)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(result)
+	fmt.Println(hwVersion)
 
+	pigpioVersion, err := gopigpio.Version(s)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(pigpioVersion)
+
+	tick, err := gopigpio.Tick(s)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(tick)
 }
