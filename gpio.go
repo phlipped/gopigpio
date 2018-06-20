@@ -1,21 +1,19 @@
 package gopigpio
 
 import (
+	"fmt"
 	"io"
 )
 
-// GPIO Modes
-type GpioMode uint32
-
 const (
-  INPUT GpioMode = 0
-  OUTPUT GpioMode = 1
-  ALT0 GpioMode = 4
-  ALT1 GpioMode = 5
-  ALT2 GpioMode = 6
-  ALT3 GpioMode = 7
-  ALT4 GpioMode = 3
-  ALT5 GpioMode = 2
+  INPUT uint32 = 0
+  OUTPUT uint32 = 1
+  ALT0 uint32 = 4
+  ALT1 uint32 = 5
+  ALT2 uint32 = 6
+  ALT3 uint32 = 7
+  ALT4 uint32 = 3
+  ALT5 uint32 = 2
 )
 
 // Command IDs for GPIOs
@@ -23,23 +21,21 @@ const (
   GPIO_SET_MODE = 0
 )
 
-func GpioSetMode(p io.ReadWriter, gpio uint32, mode GpioMode) error {
-  _ = gpio
-  _ = mode
-
-  // Build cmd struct
+func GpioSetMode(p io.ReadWriter, gpio uint32, mode uint32) error {
   cmd := Cmd{
 	  ID: GPIO_SET_MODE,
 	  P1: gpio,
-          P2: uint32(mode),
+          P2: mode,
   }
-  // Send cmd
-  result, err := sendCmd(p, cmd)
+  res, err := sendCmd(p, cmd)
+  if err != nil {
+	  return err
+  }
 
-  // Get response
-  // FIXME process result and err
-  _ = result
-  _ = err
-  // Interpret response
+  if res < 0 {
+	  return fmt.Errorf("Error from GpioSetMode(gpio=%d, mode=%d): Error code %d (see pigpio documentation for meaning of error code)", gpio, mode, res)
+  }
+
   return nil
+
 }
