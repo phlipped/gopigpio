@@ -8,21 +8,21 @@ import (
 )
 
 const (
-	WAVE_CLEAR = 27
-	WAVE_ADD_NEW = 53
-	WAVE_ADD_GENERIC = 28
-	WAVE_CREATE = 49
-	WAVE_TRANSMIT = 51
-	WAVE_TRANSMIT_REPEAT = 52
-	WAVE_CHAIN = 93
-	WAVE_TRANSMIT_MODE = 100
-	WAVE_TRANSMIT_AT = 101
+	WAVE_CLEAR           CmdID = 27
+	WAVE_ADD_NEW         CmdID = 53
+	WAVE_ADD_GENERIC     CmdID = 28
+	WAVE_CREATE          CmdID = 49
+	WAVE_TRANSMIT        CmdID = 51
+	WAVE_TRANSMIT_REPEAT CmdID = 52
+	WAVE_CHAIN           CmdID = 93
+	WAVE_TRANSMIT_MODE   CmdID = 100
+	WAVE_TRANSMIT_AT     CmdID = 101
 )
 
 type Pulse struct {
-	OnPins []uint
-	OffPins []uint
-	Delay time.Duration
+	OnPins  []Pin
+	OffPins []Pin
+	Delay   time.Duration
 }
 
 func (p Pulse) encodeToBytes() []byte {
@@ -80,7 +80,7 @@ func WaveAddGeneric(p io.ReadWriter, pulses []Pulse) (int32, error) {
 		ext = append(ext, pulse.encodeToBytes()...)
 	}
 	cmd := Cmd{
-		ID: WAVE_ADD_GENERIC,
+		ID:  WAVE_ADD_GENERIC,
 		Ext: ext,
 	}
 
@@ -143,11 +143,10 @@ type Chainer interface {
 }
 
 var (
-	LOOP_START = []byte{0xff, 0}
-	LOOP_REPEAT = []byte{0xff, 1, 0, 0}
-	LOOP_DELAY = []byte{0xff, 2, 0, 0}
+	LOOP_START   = []byte{0xff, 0}
+	LOOP_REPEAT  = []byte{0xff, 1, 0, 0}
+	LOOP_DELAY   = []byte{0xff, 2, 0, 0}
 	LOOP_FOREVER = []byte{0xff, 3}
-
 )
 
 type ChainLoopN struct {
@@ -194,19 +193,15 @@ func (cs Chainers) encodeChain() []byte {
 	return chain
 }
 
-
 type ChainWaveID uint8
 
 func (cwi ChainWaveID) encodeChain() []byte {
 	return []byte{byte(cwi)}
 }
 
-
-
-
 func WaveChain(p io.ReadWriter, chain Chainer) (int32, error) {
 	cmd := Cmd{
-		ID: WAVE_CHAIN,
+		ID:  WAVE_CHAIN,
 		Ext: chain.encodeChain(),
 	}
 	res, err := sendCmd(p, cmd)
@@ -218,15 +213,15 @@ func WaveChain(p io.ReadWriter, chain Chainer) (int32, error) {
 	}
 	return res, nil
 
-
 }
 
 type WaveMode uint32
+
 const (
-	WAVE_MODE_ONE_SHOT WaveMode = 0
-	WAVE_MODE_REPEAT WaveMode = 1
-	WAVE_MODE_ONE_SHOT_SYNC = 2
-	WAVE_MODE_REPEAT_SYNC = 3
+	WAVE_MODE_ONE_SHOT      WaveMode = 0
+	WAVE_MODE_REPEAT        WaveMode = 1
+	WAVE_MODE_ONE_SHOT_SYNC          = 2
+	WAVE_MODE_REPEAT_SYNC            = 3
 )
 
 func WaveTransmitMode(p io.ReadWriter, waveID int32, mode WaveMode) (int32, error) {
@@ -244,7 +239,6 @@ func WaveTransmitMode(p io.ReadWriter, waveID int32, mode WaveMode) (int32, erro
 	}
 	return res, nil
 }
-
 
 func WaveTransmitAt(p io.ReadWriter) (int32, error) {
 	cmd := Cmd{

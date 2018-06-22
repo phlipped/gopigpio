@@ -1,22 +1,24 @@
 package gopigpio
 
 import (
-	"fmt"
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
+type CmdID uint32
+
 type Cmd struct {
-  ID uint32
-  P1 uint32
-  P2 uint32
-  Ext []byte
+	ID  CmdID
+	P1  uint32
+	P2  uint32
+	Ext []byte
 }
 
 func (c Cmd) encodeToBytes() []byte {
 	buf := make([]byte, 16)
-	binary.LittleEndian.PutUint32(buf[0:4], c.ID)
+	binary.LittleEndian.PutUint32(buf[0:4], uint32(c.ID))
 	binary.LittleEndian.PutUint32(buf[4:8], c.P1)
 	binary.LittleEndian.PutUint32(buf[8:12], c.P2)
 	binary.LittleEndian.PutUint32(buf[12:16], uint32(len(c.Ext)))
