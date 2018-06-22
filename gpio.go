@@ -16,6 +16,17 @@ const (
   ALT5 uint32 = 2
 )
 
+const (
+	GPIO_LOW uint32 = 0
+	GPIO_HIGH uint32 = 1
+
+	GPIO_CLEAR uint32 = 0
+	GPIO_SET uint32 = 1
+
+	GPIO_OFF uint32 = 0
+	GPIO_ON uint32 = 1
+)
+
 // Command IDs for GPIOs
 const (
   GPIO_SET_MODE = 0
@@ -37,5 +48,4 @@ func GpioSetMode(p io.ReadWriter, gpio uint32, mode uint32) error {
   }
 
   return nil
-
 }
