@@ -22,14 +22,22 @@ const (
 type PinVal uint32
 
 const (
-	GPIO_LOW  uint32 = 0
-	GPIO_HIGH uint32 = 1
+	GPIO_LOW   PinVal = 0
+	GPIO_CLEAR PinVal = 0
+	GPIO_OFF   PinVal = 0
+	GPIO_HIGH  PinVal = 1
+	GPIO_SET   PinVal = 1
+	GPIO_ON    PinVal = 1
+)
 
-	GPIO_CLEAR uint32 = 0
-	GPIO_SET   uint32 = 1
+type PinPull uint32
 
-	GPIO_OFF uint32 = 0
-	GPIO_ON  uint32 = 1
+const (
+	GPIO_PULL_OFF PinPull = 0
+	GPIO_PULL_UP PinPull = 1
+	GPIO_PULL_HIGH PinPull = 1
+	GPIO_PULL_DOWN PinPull = 2
+	GPIO_PULL_LOW PinPull = 2
 )
 
 // Command IDs for GPIOs
@@ -56,5 +64,13 @@ func GpioSetMode(p io.ReadWriter, gpio Pin, mode PinMode) error {
 }
 
 func GpioWrite(p io.ReadWriter, gpio Pin, val PinVal) error {
+	_ = gpio
+	_ = val
+	return nil
+}
+
+func GpioSetPullUpDown(p io.ReadWriter, gpio Pin, pull PinPull) error {
+	_ = gpio
+	_ = pull
 	return nil
 }
