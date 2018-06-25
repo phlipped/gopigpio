@@ -43,6 +43,8 @@ const (
 // Command IDs for GPIOs
 const (
 	GPIO_SET_MODE CmdID = 0
+	GPIO_WRITE CmdID = 4
+	GPIO_SET_PULL_UP_DOWN CmdID = 2
 )
 
 func GpioSetMode(p io.ReadWriter, gpio Pin, mode PinMode) error {
@@ -64,13 +66,37 @@ func GpioSetMode(p io.ReadWriter, gpio Pin, mode PinMode) error {
 }
 
 func GpioWrite(p io.ReadWriter, gpio Pin, val PinVal) error {
-	_ = gpio
-	_ = val
+	cmd := Cmd{
+		ID: GPIO_WRITE,
+		P1: uint32(gpio),
+		P2: uint32(val),
+	}
+	res, err := sendCmd(p, cmd)
+	if err != nil {
+		return err
+	}
+
+	if res < 0 {
+		return fmt.Errorf("Error from GpioWrite(gpio=%d, val=%d): Error code %d (see pigpio documentation for meaning of error code)", gpio, val, res)
+	}
+
 	return nil
 }
 
 func GpioSetPullUpDown(p io.ReadWriter, gpio Pin, pull PinPull) error {
-	_ = gpio
-	_ = pull
+	cmd := Cmd{
+		ID: GPIO_SET_PULL_UP_DOWN,
+		P1: uint32(gpio),
+		P2: uint32(pull),
+	}
+	res, err := sendCmd(p, cmd)
+	if err != nil {
+		return err
+	}
+
+	if res < 0 {
+		return fmt.Errorf("Error from GpioSetPullUpDown(gpio=%d, pull=%d): Error code %d (see pigpio documentation for meaning of error code)", gpio, pull, res)
+	}
+
 	return nil
 }
