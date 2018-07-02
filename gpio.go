@@ -40,6 +40,7 @@ const (
 	GPIO_PULL_LOW PinPull = 2
 )
 
+
 // Command IDs for GPIOs
 const (
 	GPIO_SET_MODE CmdID = 0
