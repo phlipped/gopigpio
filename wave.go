@@ -94,21 +94,23 @@ func WaveAddGeneric(p io.ReadWriter, pulses []Pulse) (int32, error) {
 	return res, nil
 }
 
-func WaveCreate(p io.ReadWriter) (int32, error) {
+type WaveID uint32
+
+func WaveCreate(p io.ReadWriter) (WaveID, error) {
 	cmd := Cmd{
 		ID: WAVE_CREATE,
 	}
 	res, err := sendCmd(p, cmd)
 	if err != nil {
-		return res, err
+		return WaveID(res), err
 	}
 	if res < 0 {
-		return res, fmt.Errorf("Error while executing WaveCreate command: Error Code was %d", res)
+		return WaveID(res), fmt.Errorf("Error while executing WaveCreate command: Error Code was %d", res)
 	}
-	return res, nil
+	return WaveID(res), nil
 }
 
-func WaveTransmit(p io.ReadWriter, waveID int32) (int32, error) {
+func WaveTransmit(p io.ReadWriter, waveID WaveID) (int32, error) {
 	cmd := Cmd{
 		ID: WAVE_TRANSMIT,
 		P1: uint32(waveID),
