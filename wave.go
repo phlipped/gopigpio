@@ -222,8 +222,8 @@ type WaveMode uint32
 const (
 	WAVE_MODE_ONE_SHOT      WaveMode = 0
 	WAVE_MODE_REPEAT        WaveMode = 1
-	WAVE_MODE_ONE_SHOT_SYNC          = 2
-	WAVE_MODE_REPEAT_SYNC            = 3
+	WAVE_MODE_ONE_SHOT_SYNC WaveMode = 2
+	WAVE_MODE_REPEAT_SYNC   WaveMode = 3
 )
 
 func WaveTransmitMode(p io.ReadWriter, waveID int32, mode WaveMode) (int32, error) {
