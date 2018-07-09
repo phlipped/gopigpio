@@ -9,6 +9,7 @@ import (
 
 const (
 	WAVE_CLEAR           CmdID = 27
+	WAVE_TX_BUSY         CmdID = 32
 	WAVE_ADD_NEW         CmdID = 53
 	WAVE_ADD_GENERIC     CmdID = 28
 	WAVE_CREATE          CmdID = 49
@@ -245,6 +246,20 @@ func WaveTransmitMode(p io.ReadWriter, waveID int32, mode WaveMode) (int32, erro
 func WaveTransmitAt(p io.ReadWriter) (int32, error) {
 	cmd := Cmd{
 		ID: WAVE_TRANSMIT_AT,
+	}
+	res, err := sendCmd(p, cmd)
+	if err != nil {
+		return res, err
+	}
+	if res < 0 {
+		return res, fmt.Errorf("Error while executing WaveTransmitAt command: Error Code was %d", res)
+	}
+	return res, nil
+}
+
+func WaveTxBusy(p io.ReadWriter) (int32, error) {
+	cmd := Cmd{
+		ID: WAVE_TX_BUSY,
 	}
 	res, err := sendCmd(p, cmd)
 	if err != nil {
